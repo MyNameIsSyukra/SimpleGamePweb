@@ -16,6 +16,7 @@ let gameOver = false;
 let gameWin = false;
 function gameLoop() {
   tileMap.draw(ctx);
+  drawGameEnd();
   hero.draw(ctx, pause(), enemies);
   enemies.forEach((enemy) => enemy.draw(ctx, pause(), hero));
   ctx.strokeText(`lvl: ${lvl}`, 50, 50);
