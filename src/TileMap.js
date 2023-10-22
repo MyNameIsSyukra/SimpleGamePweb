@@ -1,23 +1,21 @@
 import Hero from "./Hero.js";
 import Enemy from "./Enemy.js";
 import MovingDirection from "./MovingDirection.js";
-
 export default class TileMap {
-  constructor(tileSize, lvl) {
+  constructor(tileSize, map, lvl) {
     this.tileSize = tileSize;
-    this.lvl = lvl;
     this.yellowDot = new Image();
     this.yellowDot.src = "graphics/yellowDot.png";
     this.pinkDot = new Image();
     this.pinkDot.src = "graphics/pinkDot.png";
-
+    this.map = map;
+    this.heroRadius = 16;
     this.wall = new Image();
+    this.lvl = lvl;
     this.wall.src = "graphics/wall.png";
-
     this.powerDot = this.pinkDot;
     this.powerDotAnmationTimerDefault = 30;
     this.powerDotAnmationTimer = this.powerDotAnmationTimerDefault;
-    this.mapCheck(lvl);
   }
 
   //1 - wall
@@ -26,41 +24,11 @@ export default class TileMap {
   //5 - empty space
   //6 - enemy
   //7 - power dot
-  map = [[]];
-  map1 = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1, 1],
-    [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1],
-    [1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1],
-    [1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 6, 1, 0, 1, 1],
-    [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1],
-    [1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-    [1, 1, 0, 1, 6, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 7, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1],
-    [1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
-    [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1],
-    [1, 1, 6, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
-    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  ];
 
-  mapCheck() {
-    if (this.lvl === 1) {
-      map = this.map1.concat(this.map);
-    } else if (this.lvl === 2) {
-      map = this.map2.concat(this.map);
-    }
-  }
-  map = this.map1.concat(this.map);
   draw(ctx) {
+    // console.log(this.map.length);
     for (let row = 0; row < this.map.length; row++) {
+      console.log(this.map[row].length);
       for (let column = 0; column < this.map[row].length; column++) {
         let tile = this.map[row][column];
         if (tile === 1) {
@@ -105,13 +73,13 @@ export default class TileMap {
     ctx.fillRect(column * this.tileSize, row * this.tileSize, size, size);
   }
 
-  getHero(velocity) {
+  getHero(velocity, skor) {
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
         let tile = this.map[row][column];
         if (tile === 4) {
           this.map[row][column] = 0;
-          return new Hero(column * this.tileSize, row * this.tileSize, this.tileSize, velocity, this);
+          return new Hero(column * this.tileSize, row * this.tileSize, this.tileSize, velocity, this, skor);
         }
       }
     }
@@ -185,12 +153,12 @@ export default class TileMap {
   }
 
   didWin() {
-    return this.#dotsLeft() === 0;
+    return this.lvl === 5;
   }
 
-  #dotsLeft() {
-    return this.map.flat().filter((tile) => tile === 0).length;
-  }
+  // #dotsLeft() {
+  //   return this.map.flat().filter((tile) => tile === 0).length;
+  // }
 
   eatPowerDot(x, y) {
     const row = y / this.tileSize;

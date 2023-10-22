@@ -1,23 +1,29 @@
 import TileMap from "./TileMap.js";
-
+import maps from "./Maps.js";
+import Enemy from "./Enemy.js";
 const tileSize = 32;
 const velocity = 2;
 const canvas = document.getElementById("gameCanvas");
+
+/** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext("2d");
-const tileMap = new TileMap(tileSize);
-const hero = tileMap.getHero(velocity);
-const enemies = tileMap.getEnemies(velocity);
+let tileMap = new TileMap(tileSize, maps[1], 1);
+let hero = tileMap.getHero(velocity, 0);
+let lvl = 1;
+let skor = 0;
+let enemies = tileMap.getEnemies(velocity);
 let gameOver = false;
 let gameWin = false;
-let lvl = 1;
-let flag = [false, false, false];
-
 function gameLoop() {
   tileMap.draw(ctx);
-  drawGameEnd();
   hero.draw(ctx, pause(), enemies);
   enemies.forEach((enemy) => enemy.draw(ctx, pause(), hero));
+  ctx.strokeText(`lvl: ${lvl}`, 50, 50);
+  // skor = skor + hero.score
+  document.getElementById("lvl").innerHTML = `lvl= ${lvl}`;
+  document.getElementById("skor").innerHTML = `skor= ${hero.score}`;
   checkGameOver();
+  // cekskor();
   checkGameWin();
   checkfinishWin();
 }
@@ -30,21 +36,33 @@ function checkGameWin() {
     }
   }
 }
+
 function checkGameOver() {
   if (!gameOver) {
     gameOver = isGameOver();
     if (gameOver) {
+      gameOver = drawGameEnd();
       gameOverSound.play();
     }
   }
 }
+
 function checkfinishWin() {
   if (!gameWin) {
     // Periksa apakah Pacman berada pada garis finish
     gameWin = tileMap.isHeroOnFinish(hero);
 
-    if (gameWin) {
-      gameWinSound.play();
+    if (gameWin == true) {
+      skor = hero.score;
+      lvl++;
+      tileMap = new TileMap(tileSize, maps[lvl]);
+      hero = tileMap.getHero(velocity, skor);
+      enemies = tileMap.getEnemies(velocity);
+      gameWin = false;
+      // if (lvl === 5) {
+      //   gameWin = true;
+      //   drawGameEnd();
+      // }
     }
   }
 }

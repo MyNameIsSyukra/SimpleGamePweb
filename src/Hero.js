@@ -1,13 +1,13 @@
 import MovingDirection from "./MovingDirection.js";
 
 export default class Hero {
-  constructor(x, y, tileSize, velocity, tileMap) {
+  constructor(x, y, tileSize, velocity, tileMap, skor) {
     this.x = x;
     this.y = y;
     this.tileSize = tileSize;
     this.velocity = velocity;
     this.tileMap = tileMap;
-
+    this.score = skor;
     this.currentMovingDirection = null;
     this.requestedMovingDirection = null;
 
@@ -171,6 +171,7 @@ export default class Hero {
       const collideEnemies = enemies.filter((enemy) => enemy.collideWith(this));
       collideEnemies.forEach((enemy) => {
         enemies.splice(enemies.indexOf(enemy), 1);
+        this.score += 50;
       });
     }
   }
