@@ -28,7 +28,7 @@ export default class TileMap {
   draw(ctx) {
     // console.log(this.map.length);
     for (let row = 0; row < this.map.length; row++) {
-      console.log(this.map[row].length);
+      // console.log(this.map[row].length);
       for (let column = 0; column < this.map[row].length; column++) {
         let tile = this.map[row][column];
         if (tile === 1) {

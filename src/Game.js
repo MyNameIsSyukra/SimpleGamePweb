@@ -14,18 +14,21 @@ let skor = 0;
 let enemies = tileMap.getEnemies(velocity);
 let gameOver = false;
 let gameWin = false;
+let isGameRunning = true;
 function gameLoop() {
   tileMap.draw(ctx);
   hero.draw(ctx, pause(), enemies);
   enemies.forEach((enemy) => enemy.draw(ctx, pause(), hero));
   ctx.strokeText(`lvl: ${lvl}`, 50, 50);
-  // skor = skor + hero.score
   document.getElementById("lvl").innerHTML = `lvl= ${lvl}`;
   document.getElementById("skor").innerHTML = `skor= ${hero.score}`;
-  checkGameOver();
-  // cekskor();
+  checkGameOver(); // Periksa apakah game over terjadi
   checkGameWin();
   checkfinishWin();
+
+  if (isGameRunning) {
+    return;
+  }
 }
 
 function checkGameWin() {
@@ -39,9 +42,10 @@ function checkGameWin() {
 
 function checkGameOver() {
   if (!gameOver) {
-    gameOver = isGameOver();
+    gameOver = isGameOver(); // Periksa apakah game over terjadi
     if (gameOver) {
-      gameOver = drawGameEnd();
+      isGameRunning = false;
+      drawGameEnd();
       gameOverSound.play();
     }
   }
@@ -77,20 +81,18 @@ function pause() {
 
 function drawGameEnd() {
   if (gameOver || gameWin) {
+    // Menampilkan pesan game over
     let text = " You Escaped!";
     if (gameOver) {
       text = "Game Over";
     }
-
     ctx.fillStyle = "black";
     ctx.fillRect(0, canvas.height / 2.5, canvas.width, 80);
-
     ctx.font = "75px comic sans";
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
     gradient.addColorStop("0", "magenta");
     gradient.addColorStop("0.5", "blue");
     gradient.addColorStop("1.0", "red");
-
     ctx.fillStyle = gradient;
     ctx.fillText(text, 10, canvas.height / 2);
   }

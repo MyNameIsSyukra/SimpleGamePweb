@@ -1,0 +1,37 @@
+body {
+  background: linear-gradient(0deg, #b0d9b1 0%, rgb(136, 34, 195) 100%);
+  background-size: auto;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+}
+
+.center {
+  text-align: center;
+}
+
+#gameContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: fit-content;
+}
+
+.games {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.bold {
+  font-weight: 800;
+}
+
+.form-container {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
